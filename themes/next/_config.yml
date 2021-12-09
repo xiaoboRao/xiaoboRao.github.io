@@ -21,12 +21,12 @@ minify: false
 custom_file_path:
   #head: source/_data/head.njk
   #header: source/_data/header.njk
-  #sidebar: source/_data/sidebar.njk
+  sidebar: source/_data/sidebar.njk
   #postMeta: source/_data/post-meta.njk
   postBodyEnd: source/_data/post-body-end.njk
   #footer: source/_data/footer.styl
   #bodyEnd: source/_data/body-end.njk
-  #variable: source/_data/variables.styl
+  variable: source/_data/variables.styl
   #mixin: source/_data/mixins.styl
   style: source/_data/styles.styl
 # ---------------------------------------------------------------
@@ -85,7 +85,7 @@ menu:
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th
   archives: /archives/ || fa fa-archive
-  guestbook: /guestbook/ || fa fa-book
+  #guestbook: /guestbook/ || fa fa-book
   #schedule: /schedule/ || fa fa-calendar
   #sitemap: /sitemap.xml || fa fa-sitemap
   #commonweal: /404/ || fa fa-heartbeat
@@ -397,10 +397,13 @@ bookmark:
   save: auto
 
 # `Follow me on GitHub` banner in the top-right corner.
-github_banner:
-  enable: true
-  permalink: https://github.com/xiaoboRao
-  title: Follow me on GitHub
+#github_banner:
+  #enable: true
+  #permalink: https://github.com/xiaoboRao
+  #title: Follow me on GitHub
+
+
+github_banner: https://github.com/nightmaredimple || Follow me on GitHub
 
 
 # ---------------------------------------------------------------
@@ -709,11 +712,11 @@ firestore:
 busuanzi_count:
   enable: true
   total_visitors: true
-  total_visitors_icon: user
+  total_visitors_icon: fa fa-user
   total_views: true
-  total_views_icon: eye
+  total_views_icon: fa fa-eye
   post_views: true
-  post_views_icon: eye
+  post_views_icon: fa fa-eye
 
 
 # ---------------------------------------------------------------
@@ -885,27 +888,24 @@ images: images
 
 # Darkmode JS
 # For more information: https://github.com/rqh656418510/hexo-next-darkmode, https://github.com/sandoche/Darkmode.js
-darkmode_js:
-  enable: true
-  bottom: '64px' # default: '32px'
-  right: '32px' # default: '32px'
-  left: 'unset' # default: 'unset'
-  time: '0.5s' # default: '0.3s'
-  mixColor: 'transparent' # default: '#fff'
-  backgroundColor: 'transparent' # default: '#fff'
-  buttonColorDark: '#100f2c' # default: '#100f2c'
-  buttonColorLight: '#fff' # default: '#fff'
-  isActivated: false # default false
-  saveInCookies: true # default: true
-  label: '🌓' # default: ''
-  autoMatchOsTheme: true # default: true
-  libUrl: # Set custom library cdn url for Darkmode.js
+#darkmode_js:
+  #enable: false
+  #bottom: '64px' # default: '32px'
+  #right: '32px' # default: '32px'
+  #left: 'unset' # default: 'unset'
+  #time: '0.5s' # default: '0.3s'
+  #mixColor: 'transparent' # default: '#fff'
+  #backgroundColor: 'transparent' # default: '#fff'
+  #buttonColorDark: '#100f2c' # default: '#100f2c'
+  #buttonColorLight: '#fff' # default: '#fff'
+  #isActivated: false # default false
+  #saveInCookies: true # default: true
+  #label: '🌓' # default: ''
+  #autoMatchOsTheme: true # default: true
+  #libUrl: # Set custom library cdn url for Darkmode.js
 
 
  # mouse click effect: fireworks | explosion | love | text
 cursor_effect: fireworks
-# typing effect
-typing_effect:
-  colorful: true  # 礼花特效
-  shake: false  # 震动特效
+
 
