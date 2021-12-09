@@ -25,6 +25,9 @@
   box-shadow: $box-shadow;
   box-sizing: border-box;
   color: var(--text-color);
+
+ 
+  
 }
 
 .site-state-item {
@@ -50,14 +53,16 @@
 }
 
 .links-of-author {
-  flex-wrap();
+  
+  flex-nowrap();
+  margin-bottom: 10px;
 }
 
 .links-of-author-item {
   sidebar-inline-links-item();
 
   if (not hexo-config('social_icons.icons_only')) {
-    width: 50%;
+   
   }
 
   a {

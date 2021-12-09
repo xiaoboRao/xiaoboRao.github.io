@@ -12,6 +12,9 @@
   {%- include 'chat/tidio.njk' -%}
 {%- elif theme.gitter.enable %}
   {%- include 'chat/gitter.njk' -%}
+
+  {%- elif theme.utterance.enable %}
+  {%- include 'utterance.njk' -%}
 {%- endif %}
 
 {%- include 'tags/pdf.njk' -%}
@@ -20,3 +23,5 @@
 {%- include 'fancybox.njk' -%}
 
 {%- include 'pace.njk' -%}
+
+
