@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Github Actions实现自动化部署Hexo博客</title>
+    <url>/2021/12/25/github-hexo/</url>
+    <content><![CDATA[<h2 id="痛点"><a href="#痛点" class="headerlink" title="痛点"></a>痛点</h2><p>在Github上面用Hexo建立自己的个人博客，用到了2个仓库，一个用来放hexo的源代码，方便更换设备后依旧可以无缝衔接写博客，另一个仓库用来展示博客网站，放的是发布文章的源代码。</p>
+<span id="more"></span>
+<p><img src="/2021/12/25/github-hexo/1.png" alt="(源码仓库)"></p>
+<p>那么问题就来了，现在我写完博客，既要先同步hexo代码到GitHub仓库，还要发布最新的文章到博客网页，要打两份工，很费时间，那么有没有自动化的工具来处理这些繁杂的工作？当然有的，推荐使用官方的Github Actions。</p>
+<p>当我们将hexo代码push到远程仓库后，触发GitHub Actions的workflow，然后workflow会创建一个运行环境，获取到hexo源码，再进行构建和部署，最后发布到博客仓库。也就是说我们只要推送hexo代码，剩下的就由github Actions自动完成。</p>
+<p>下面是具体的配置：</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><h3 id="生成deploy-keys"><a href="#生成deploy-keys" class="headerlink" title="生成deploy keys"></a>生成deploy keys</h3><p>前面提到两个仓库，一个是博客仓库，是以.gihub.io结尾的，另一个是放置hexo代码的，一定要先区分好这两个仓库。</p>
+<p>接下来就要生成密钥，敲入如下命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -f github-deploy-key</span><br></pre></td></tr></table></figure>
+<p>当前目录下会有 github-deploy-key 和 github-deploy-key.pub 两个文件,我觉得也可以用GitHub配置ssh密钥的这两个文件，不过为了区分，可以单独再创建这两个文件。</p>
+<h3 id="配置博客仓库deploy-keys"><a href="#配置博客仓库deploy-keys" class="headerlink" title="配置博客仓库deploy keys"></a>配置博客仓库deploy keys</h3><p>打开博客仓库，结尾是.gihub.io,打开Settings，按照下图操作<br><img src="/2021/12/25/github-hexo/2.png" alt="(源码仓库)"><br><img src="/2021/12/25/github-hexo/3.png" alt="(源码仓库)"></p>
+<p>将github-deploy-key.pub里面的密钥全部复制到Key里面，title可以自己定义。上面的deploy keys是我以前配置的，别管他。</p>
+<h3 id="配置Hexo仓库Secrets"><a href="#配置Hexo仓库Secrets" class="headerlink" title="配置Hexo仓库Secrets"></a>配置Hexo仓库Secrets</h3><p>打开Hexo仓库的Settings，找到Secrets按照下图操作<br><img src="/2021/12/25/github-hexo/4.png" alt="(源码仓库)"></p>
+<p>将github-deploy-key的内容全部复制到Value中，Name自己定义，上面的2个也是我之前配置的，不用慌。</p>
+<h2 id="编写Github-Actions"><a href="#编写Github-Actions" class="headerlink" title="编写Github Actions"></a>编写Github Actions</h2><h3 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h3><p>点击打开Actions 创建workflows<br><img src="/2021/12/25/github-hexo/newworkflow.png" alt="(源码仓库)"><br><img src="/2021/12/25/github-hexo/setup.png" alt="(源码仓库)"><br><img src="/2021/12/25/github-hexo/nodejs.png" alt="(源码仓库)"><br>可以选择一个nodejs模板，也可以不选，直接复制下面我给出的模板</p>
+<p>对照下面的配置模板，选择性粘贴进创建的yml文件，也可以全部粘贴，试试效果，再改</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"># This is a basic workflow to help you get started <span class="keyword">with</span> Actions</span><br><span class="line"></span><br><span class="line"><span class="attr">name</span>: CI</span><br><span class="line"></span><br><span class="line"># Controls when the workflow will run</span><br><span class="line"><span class="attr">on</span>:</span><br><span class="line">  # Triggers the workflow on push or pull request events but only <span class="keyword">for</span> the main branch</span><br><span class="line">  <span class="attr">push</span>:</span><br><span class="line">    branches: [ main ]</span><br><span class="line">  <span class="attr">pull_request</span>:</span><br><span class="line">    branches: [ main ]</span><br><span class="line"></span><br><span class="line">  # Allows you to run <span class="built_in">this</span> workflow manually <span class="keyword">from</span> the Actions tab</span><br><span class="line">  <span class="attr">workflow_dispatch</span>:</span><br><span class="line"></span><br><span class="line"># A workflow run is made up <span class="keyword">of</span> one or more jobs that can run sequentially or <span class="keyword">in</span> parallel</span><br><span class="line"><span class="attr">jobs</span>:</span><br><span class="line">  # This workflow contains a single job called <span class="string">&quot;build&quot;</span></span><br><span class="line">  <span class="attr">build</span>:</span><br><span class="line">    # The type <span class="keyword">of</span> runner that the job will run on</span><br><span class="line">    runs-on: ubuntu-latest</span><br><span class="line"></span><br><span class="line">    # Steps represent a sequence <span class="keyword">of</span> tasks that will be executed <span class="keyword">as</span> part <span class="keyword">of</span> the job</span><br><span class="line">    <span class="attr">steps</span>:</span><br><span class="line">      - name: Checkout source</span><br><span class="line">        <span class="attr">uses</span>: actions/checkout@v1</span><br><span class="line">        <span class="attr">with</span>:</span><br><span class="line">            ref: main</span><br><span class="line"></span><br><span class="line">      - name: Setup Node.js</span><br><span class="line">        <span class="attr">uses</span>: actions/setup-node@v1</span><br><span class="line">        <span class="attr">with</span>:</span><br><span class="line">              node-version: <span class="string">&#x27;12&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      - name: Setup Hexo</span><br><span class="line">        <span class="attr">env</span>: </span><br><span class="line">                # HEXO_DEPLOY_PRI_XIAOXIN_WINDOW 这个就是配置hexo仓库secrets的name，一定要对应上</span><br><span class="line">                <span class="attr">ACTION_DEPLOY_KEY</span>: $&#123;&#123; secrets.HEXO_DEPLOY_PRI_XIAOXIN_WINDOW &#125;&#125;</span><br><span class="line">        <span class="attr">run</span>: |</span><br><span class="line">                    mkdir -p ~<span class="regexp">/.ssh/</span></span><br><span class="line">                    echo <span class="string">&quot;$ACTION_DEPLOY_KEY&quot;</span>&gt; ~<span class="regexp">/.ssh/i</span>d_rsa</span><br><span class="line">                    chmod <span class="number">700</span> ~/.ssh</span><br><span class="line">                    chmod <span class="number">600</span> ~<span class="regexp">/.ssh/i</span>d_rsa</span><br><span class="line">                    ssh-keyscan github.com &gt;&gt; ~<span class="regexp">/.ssh/</span>known_hosts</span><br><span class="line">                    git config --<span class="built_in">global</span> user.email 你的GitHub邮箱</span><br><span class="line">                    git config --<span class="built_in">global</span> user.name 你的GitHub名字</span><br><span class="line">                    npm install hexo-cli -g</span><br><span class="line">                    npm install</span><br><span class="line">      - name: Deploy</span><br><span class="line">        <span class="attr">run</span>: |</span><br><span class="line">            hexo clean</span><br><span class="line">            hexo deploy</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>简单解释一下，当我们推送内容到远程main分支的时候，就会触发这个Workflow。</p>
+<p>使用最新的Ubuntu作为hexo deploy的系统。</p>
+<p>首先checkout源代码，然后设置使用最新的Node.js v12 LTS作为node解释器。</p>
+<p>接着就是配置SSH相关的配置文件，secrets.HEXO_DEPLOY_PRI_XIAOXIN_WINDOW，这个名字一定要对应配置Hexo仓库Secrets</p>
+<p>git config相关的名字和邮件地址替换成大家自己使用的就好了。</p>
+<p>最后就是安装Hexo CLI，各个依赖模块和部署了。</p>
+<h3 id="验证效果"><a href="#验证效果" class="headerlink" title="验证效果"></a>验证效果</h3><p>下面就是运行成功的效果，成功的都会打上勾<br><img src="/2021/12/25/github-hexo/6.png" alt="(源码仓库)"></p>
+<p>失败了的话可以打开看看哪里报错了，再仔细看看哪里配置不对，再修改。成功了，博客仓库的更新有一点时间的延迟，耐心等待几分钟就好了。<br><img src="/2021/12/25/github-hexo/7.png" alt="(源码仓库)"><br>最后贴上自己搭建的博客网站：<br><a href="https://xiaoborao.github.io/">https://xiaoborao.github.io/</a></p>
+]]></content>
+      <categories>
+        <category>Github</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Github Actions</tag>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+</search>
